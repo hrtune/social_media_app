@@ -6,3 +6,4 @@ db-volumes/
 .env
 .DS_Store
 hidden_notes.md
+social_book/media
