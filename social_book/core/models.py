@@ -25,4 +25,4 @@ class Post(models.Model):
     num_of_likes = models.IntegerField(default=0)
 
     def __str__(self):
-        return self.user
+        return "{} ({})".format(self.user, self.created_at)
