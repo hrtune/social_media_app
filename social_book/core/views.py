@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages, auth
 from django.http import HttpResponse
-from .models import Profile
+from .models import Profile, Post
 
 @login_required(login_url='signin')
 def index(request):
@@ -13,7 +13,18 @@ def index(request):
 
 @login_required(login_url='signin')
 def upload(request):
-    return HttpResponse("<h1>Upload View</h1>")
+
+    if request.method == 'POST':
+        image = request.FILES.get('image_upload')
+        if image != None:
+            user = request.user.username
+            caption = request.POST['caption']
+            new_post = Post.objects.create(user=user, image=image, caption=caption)
+            new_post.save()
+        return redirect(request.path)
+
+    # if the request is get...
+    return redirect('/')
 
 @login_required(login_url='signin')
 def settings(request):
