@@ -74,6 +74,7 @@
                                     </div> -->
 
                                     <form action="{% url 'upload' %}" method="post" enctype="multipart/form-data">
+                                    {% csrf_token %}
                                     <!-- <p class="my-3 leading-6"> Upload pics
                                     </p> -->
                                     <div>
