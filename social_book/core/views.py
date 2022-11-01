@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages, auth
 from django.http import HttpResponse
-from .models import Profile, Post
+from .models import Profile, Post, LikePost
 
 @login_required(login_url='signin')
 def index(request):
@@ -29,7 +29,23 @@ def upload(request):
 
 @login_required(login_url='signin')
 def like_post(request):
-    pass
+    username = request.user.username
+    post_id = request.GET.get('post_id')
+    post = Post.objects.get(id=post_id)
+
+    like_filter = LikePost.objects.filter(username=username, post_id=post_id).first()
+
+    if like_filter == None:
+        LikePost.objects.create(username=username, post_id=post_id)
+        post.num_of_likes += 1
+        post.save()
+        return redirect('/')
+    else:
+        like_filter.delete()
+        post.num_of_likes -= 1
+        post.save()
+        return redirect('/')
+
 
 @login_required(login_url='signin')
 def settings(request):
