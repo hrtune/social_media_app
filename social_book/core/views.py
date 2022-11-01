@@ -12,6 +12,9 @@ def index(request):
     posts = Post.objects.all() # Show all posts by all users on index
     return render(request, 'index.html', { 'user_profile' : user_profile, 'posts' : posts})
 
+def profile(request):
+    return render(request, 'profile.html')
+
 @login_required(login_url='signin')
 def upload(request):
 
