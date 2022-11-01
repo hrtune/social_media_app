@@ -26,3 +26,10 @@ class Post(models.Model):
 
     def __str__(self):
         return "{} ({})".format(self.user, self.created_at)
+
+class LikePost(models.Model):
+    post_id = models.CharField(max_length=512)
+    username = models.CharField(max_length=128)
+
+    def __str__(self):
+        return self.username + " -> " + self.post_id
