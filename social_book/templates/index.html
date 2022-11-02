@@ -218,7 +218,7 @@
                                         -->
 
                                     </a>
-                                    <span class="block capitalize font-semibold "><a href="#">@{{ post.user }}</a></span>
+                                    <span class="block capitalize font-semibold "><a href="{% url 'profile' post.user %}">@{{ post.user }}</a></span>
                                 </div>
                               <div>
                                 <a href="#"> <i class="icon-feather-more-horizontal text-2xl hover:bg-gray-200 rounded-full p-2 transition -mr-1 "></i> </a>
@@ -357,7 +357,7 @@
                                 </div>
                                 -->
                                 <p>
-                                    <a href="#"><strong>{{ post.user }}</strong></a> {{ post.caption }}
+                                    <a href="{% url 'profile' post.user %}"><strong>{{ post.user }}</strong></a> {{ post.caption }}
                                 </p>
     
                             </div>
