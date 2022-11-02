@@ -42,13 +42,17 @@ def profile(request, pk):
     user_posts = Post.objects.filter(user=pk)
     user_posts_length = len(user_posts)
     followed = FollowersCount.objects.filter(follower=request.user.username, user=pk).first() != None
+    user_following = len(FollowersCount.objects.filter(follower=pk))
+    user_followers = len(FollowersCount.objects.filter(user=pk))
 
     context = {
         'user_object' : user_object, # user who owns this profile
         'user_profile' : user_profile,
         'user_posts' : user_posts,
         'user_posts_length' : user_posts_length,
-        'followed' : followed
+        'followed' : followed,
+        'user_following' : user_following,
+        'user_followers' : user_followers,
     }
     return render(request, 'profile.html', context)
 
