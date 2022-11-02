@@ -3,7 +3,8 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages, auth
 from django.http import HttpResponse
-from .models import Profile, Post, LikePost
+from numpy import delete
+from .models import Profile, Post, LikePost, FollowersCount
 
 @login_required(login_url='signin')
 def index(request):
@@ -13,17 +14,41 @@ def index(request):
     return render(request, 'index.html', { 'user_profile' : user_profile, 'posts' : posts})
 
 @login_required(login_url='signin')
+def follow(request):
+    if request.method == 'POST':
+        follower = request.POST['follower']
+        user = request.POST['user']
+
+        if follower == user:
+            return redirect(request.path)
+        
+        # if the user is already a follower then...
+        if FollowersCount.objects.filter(follower=follower, user=user).first():
+            delete_follower = FollowersCount.objects.get(follower=follower, user=user)
+            delete_follower.delete()
+        else:
+            FollowersCount.objects.create(follower=follower, user=user)
+
+
+        return redirect('/profile/' + user)
+    # method is get then
+    else:
+        return redirect('/')
+
+@login_required(login_url='signin')
 def profile(request, pk):
     user_object = User.objects.get(username=pk)
     user_profile = Profile.objects.get(user=user_object)
     user_posts = Post.objects.filter(user=pk)
     user_posts_length = len(user_posts)
+    followed = FollowersCount.objects.filter(follower=request.user.username, user=pk).first() != None
 
     context = {
-        'user_object' : user_object,
+        'user_object' : user_object, # user who owns this profile
         'user_profile' : user_profile,
         'user_posts' : user_posts,
         'user_posts_length' : user_posts_length,
+        'followed' : followed
     }
     return render(request, 'profile.html', context)
 
