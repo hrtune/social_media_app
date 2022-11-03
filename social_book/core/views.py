@@ -23,7 +23,9 @@ def index(request):
     # list of user objects this user is not following
     suggestion_list = [ u for u in User.objects.all() if (u.username not in user_following_list) and (u.username != request.user.username) ]
 
-    return render(request, 'index.html', { 'user_profile' : user_profile, 'posts' : feed_list, 'suggestion_list' : suggestion_list})
+    suggestion_profiles = [ Profile.objects.get(id_user=u.id) for u in suggestion_list] # redundant
+
+    return render(request, 'index.html', { 'user_profile' : user_profile, 'posts' : feed_list, 'suggestion_profiles' : suggestion_profiles[:5]})
 
 @login_required(login_url='signin')
 def search(request):

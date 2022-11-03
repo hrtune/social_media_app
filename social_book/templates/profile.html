@@ -31,7 +31,7 @@
 					<div class="add-btn">
 					<span style="color: white; font-size: 27px; margin-right: 520px;"><b><u><a href="{% url 'index' %}">Home</a></u></b></span>
 					<span style="color: white; font-size: 27px;"><b>{{ user_posts_length }} Post{{ user_posts_length|pluralize }}</b></span>
-					<span style="color: white; font-size: 27px;"><b>{{ user_followers }} follower{{ user_followers|pluralize }}</b></span>
+					<span style="color: white; font-size: 27px;"><b>{{ user_followers }} follower</b></span>
 					<span style="color: white; font-size: 27px;"><b>{{ user_following }} following</b></span>
 					
 					<input type="hidden" value="{{ user.username }}" name="follower" /> {# for a user who watching this profile #}
