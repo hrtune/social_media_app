@@ -3,15 +3,38 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages, auth
 from django.http import HttpResponse
-from numpy import delete
 from .models import Profile, Post, LikePost, FollowersCount
+from itertools import chain
+from django.db.models import Q
 
 @login_required(login_url='signin')
 def index(request):
     user_object = User.objects.get(username=request.user.username)
     user_profile = Profile.objects.get(user=user_object)
-    posts = Post.objects.all() # Show all posts by all users on index
-    return render(request, 'index.html', { 'user_profile' : user_profile, 'posts' : posts})
+
+    user_following = FollowersCount.objects.filter(follower=request.user.username)
+
+    user_following_list = [ q.user for q in user_following ]
+    feed = [ Post.objects.filter(user=n) for n in user_following_list ]
+    feed.append(Post.objects.filter(user=request.user.username))
+
+    feed_list = list(chain(*feed))
+
+    # list of user objects this user is not following
+    suggestion_list = [ u for u in User.objects.all() if (u.username not in user_following_list) and (u.username != request.user.username) ]
+
+    return render(request, 'index.html', { 'user_profile' : user_profile, 'posts' : feed_list, 'suggestion_list' : suggestion_list})
+
+@login_required(login_url='signin')
+def search(request):
+    query = request.GET['q']
+    if query:
+        matched_users = User.objects.filter(username__icontains=query)
+        user_profile = [ Profile.objects.get(id_user=u.id) for u in matched_users if  ]
+    else:
+        user_profile = list(Profile.objects.all())
+
+    return render(request, 'search.html', { 'user_profile' : user_profile })
 
 @login_required(login_url='signin')
 def follow(request):
@@ -138,8 +161,7 @@ def signup(request):
 
                 # create a Profile object for the new user
                 user_model = User.objects.get(username=username)
-                new_profile = Profile.objects.create(user=user_model, id_user=user_model.id)
-                new_profile.save()
+                Profile.objects.create(user=user_model, id_user=user_model.id)
                 return redirect('settings')
 
         else:
