@@ -30,10 +30,10 @@ def search(request):
     query = request.GET['q']
     if query:
         matched_users = User.objects.filter(username__icontains=query)
-        user_profile = [ Profile.objects.get(id_user=u.id) for u in matched_users if  ]
+        user_profile = [ Profile.objects.get(id_user=u.id) for u in matched_users ]
     else:
         user_profile = list(Profile.objects.all())
-
+    
     return render(request, 'search.html', { 'user_profile' : user_profile })
 
 @login_required(login_url='signin')
